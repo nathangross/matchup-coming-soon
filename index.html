@@ -6,15 +6,6 @@
   <title>Matchup — Coming Soon</title>
   <meta name="description" content="Matchup is being rebuilt from the ground up. Courts, leagues, seasons, scheduling, and standings — done right." />
 
-  <!-- FOUC prevention: set theme before CSS renders -->
-  <script>
-    (function() {
-      var s = localStorage.getItem('theme-preference');
-      var t = (s === 'light' || s === 'dark') ? s : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', t);
-    })();
-  </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -40,36 +31,6 @@
       --footer-color: rgba(255,255,255,0.2);
       --mono: 'IBM Plex Mono', monospace;
       --sans: 'IBM Plex Sans', sans-serif;
-    }
-
-    [data-theme='light'] {
-      --accent: #6b7000;
-      --badge-border: rgba(107,112,0,0.3);
-      --form-focus: rgba(107,112,0,0.35);
-      --grid: rgba(17,17,17,0.04);
-      --center-line: rgba(17,17,17,0.07);
-      --bg: #f7f7ee;
-      --bg-2: #ededdc;
-      --text: #111111;
-      --muted: rgba(17,17,17,0.45);
-      --border: rgba(17,17,17,0.1);
-      --footer-color: rgba(17,17,17,0.25);
-    }
-
-    @media (prefers-color-scheme: light) {
-      :root:not([data-theme='dark']):not([data-theme='light']) {
-        --accent: #6b7000;
-        --badge-border: rgba(107,112,0,0.3);
-        --form-focus: rgba(107,112,0,0.35);
-        --grid: rgba(17,17,17,0.04);
-        --center-line: rgba(17,17,17,0.07);
-        --bg: #f7f7ee;
-        --bg-2: #ededdc;
-        --text: #111111;
-        --muted: rgba(17,17,17,0.45);
-        --border: rgba(17,17,17,0.1);
-        --footer-color: rgba(17,17,17,0.25);
-      }
     }
 
     html, body {
@@ -106,30 +67,6 @@
       transform: translateX(-50%);
       pointer-events: none;
       z-index: 0;
-    }
-
-    /* Theme toggle */
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      color: var(--muted);
-      padding: 8px;
-      cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 0;
-    }
-
-    .theme-toggle:hover {
-      border-color: var(--badge-border);
-      color: var(--accent);
     }
 
     .page {
@@ -381,26 +318,6 @@
 </head>
 <body>
 
-  <!-- Theme toggle -->
-  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-    <!-- Sun: shown in dark mode → click to go light -->
-    <svg id="icon-sun" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
-      <line x1="8" y1="1" x2="8" y2="2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="8" y1="13.5" x2="8" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="1" y1="8" x2="2.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="13.5" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="3.4" y1="3.4" x2="4.46" y2="4.46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="11.54" y1="11.54" x2="12.6" y2="12.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="12.6" y1="3.4" x2="11.54" y2="4.46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="4.46" y1="11.54" x2="3.4" y2="12.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    <!-- Moon: shown in light mode → click to go dark -->
-    <svg id="icon-moon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
-      <path d="M13 10.5A6 6 0 0 1 5.5 3a6 6 0 1 0 7.5 7.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
-
   <div class="page">
 
     <div class="badge">
@@ -449,38 +366,6 @@
   <footer>matchup.us</footer>
 
   <script>
-    // ── Theme system ──────────────────────────────────────────────
-    var THEME_KEY = 'theme-preference';
-
-    function getTheme() {
-      return document.documentElement.getAttribute('data-theme') || 'dark';
-    }
-
-    function setTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem(THEME_KEY, theme);
-      updateToggle(theme);
-    }
-
-    function updateToggle(theme) {
-      document.getElementById('icon-sun').style.display  = theme === 'dark'  ? '' : 'none';
-      document.getElementById('icon-moon').style.display = theme === 'light' ? '' : 'none';
-    }
-
-    document.getElementById('theme-toggle').addEventListener('click', function() {
-      setTheme(getTheme() === 'dark' ? 'light' : 'dark');
-    });
-
-    // Sync icon to initial theme set by FOUC script
-    updateToggle(getTheme());
-
-    // Respond to OS-level theme changes when no explicit preference is stored
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-      if (!localStorage.getItem(THEME_KEY)) {
-        setTheme(e.matches ? 'dark' : 'light');
-      }
-    });
-
     // ── Typing effect ─────────────────────────────────────────────
     var phrases = [
       'Run your league. Not your spreadsheets.',
